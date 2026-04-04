@@ -290,9 +290,14 @@ export default function HomePage() {
     <main className="relative w-full h-[100dvh] overflow-hidden bg-slate-950">
       <header className="absolute top-0 left-0 right-0 p-6 z-50 flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <h1 className="font-serif text-2xl font-bold tracking-widest text-white/90 drop-shadow-md">
-            NGẪM
-          </h1>
+          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg" title="NGẪM">
+            <svg viewBox="0 0 100 100" className="w-6 h-6 text-white drop-shadow-md" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M25 75C25 75 35 45 50 45C65 45 75 75 75 75" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M35 55C35 55 42 35 50 35C58 35 65 55 65 55" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="50" cy="22" r="6" fill="currentColor"/>
+              <path d="M15 50C15 50 25 20 50 20C75 20 85 50 85 50" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="4 8" opacity="0.5"/>
+            </svg>
+          </div>
           <div className="hidden sm:block text-xs font-medium text-white/60 tracking-widest uppercase drop-shadow-md">
             {new Date().toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}
           </div>

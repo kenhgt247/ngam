@@ -49,7 +49,17 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 text-center max-w-sm w-full">
-          <h1 className="text-2xl font-serif font-bold text-slate-900 mb-2">NGẪM Admin</h1>
+          <div className="flex justify-center mb-4">
+            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-slate-900 shadow-lg" title="NGẪM">
+              <svg viewBox="0 0 100 100" className="w-7 h-7 text-white" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M25 75C25 75 35 45 50 45C65 45 75 75 75 75" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M35 55C35 55 42 35 50 35C58 35 65 55 65 55" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="50" cy="22" r="6" fill="currentColor"/>
+                <path d="M15 50C15 50 25 20 50 20C75 20 85 50 85 50" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="4 8" opacity="0.5"/>
+              </svg>
+            </div>
+          </div>
+          <h1 className="text-2xl font-serif font-bold text-slate-900 mb-2">Admin</h1>
           <p className="text-slate-500 mb-8">Đăng nhập để quản trị nội dung</p>
           <button 
             onClick={handleLogin}
@@ -109,8 +119,15 @@ export default function AdminPage() {
     <div className="min-h-screen bg-slate-50 flex flex-col md:flex-row">
       {/* Mobile Header */}
       <div className="md:hidden bg-white border-b border-slate-200 p-4 flex justify-between items-center sticky top-0 z-20">
-        <div>
-          <h1 className="font-serif text-xl font-bold text-slate-900">NGẪM</h1>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-slate-900 shadow-sm" title="NGẪM">
+            <svg viewBox="0 0 100 100" className="w-5 h-5 text-white" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M25 75C25 75 35 45 50 45C65 45 75 75 75 75" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M35 55C35 55 42 35 50 35C58 35 65 55 65 55" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="50" cy="22" r="6" fill="currentColor"/>
+              <path d="M15 50C15 50 25 20 50 20C75 20 85 50 85 50" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="4 8" opacity="0.5"/>
+            </svg>
+          </div>
           <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Admin</span>
         </div>
         <button 
@@ -127,8 +144,15 @@ export default function AdminPage() {
         md:block w-full md:w-64 bg-white border-r border-slate-200 flex-col
         fixed md:sticky top-[73px] md:top-0 h-[calc(100vh-73px)] md:h-screen z-10
       `}>
-        <div className="hidden md:block p-6 border-b border-slate-100">
-          <h1 className="font-serif text-xl font-bold text-slate-900">NGẪM</h1>
+        <div className="hidden md:flex items-center gap-3 p-6 border-b border-slate-100">
+          <div className="flex items-center justify-center w-10 h-10 rounded-full bg-slate-900 shadow-sm" title="NGẪM">
+            <svg viewBox="0 0 100 100" className="w-6 h-6 text-white" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M25 75C25 75 35 45 50 45C65 45 75 75 75 75" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M35 55C35 55 42 35 50 35C58 35 65 55 65 55" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="50" cy="22" r="6" fill="currentColor"/>
+              <path d="M15 50C15 50 25 20 50 20C75 20 85 50 85 50" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" strokeDasharray="4 8" opacity="0.5"/>
+            </svg>
+          </div>
           <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Admin Panel</span>
         </div>
         <nav className="flex-1 p-4 space-y-1">
