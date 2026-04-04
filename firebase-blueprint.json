@@ -1,0 +1,99 @@
+{
+  "entities": {
+    "Quote": {
+      "title": "Quote",
+      "description": "A quote to be displayed in the app.",
+      "type": "object",
+      "properties": {
+        "content": { "type": "string", "description": "The text of the quote." },
+        "author": { "type": "string", "description": "The author of the quote." },
+        "authorId": { "type": "string", "description": "Optional ID of the user who created the quote." },
+        "authorDisplayName": { "type": "string", "description": "Optional display name of the user who created the quote." },
+        "authorPhotoURL": { "type": "string", "description": "Optional photo URL of the user who created the quote." },
+        "category": { "type": "string", "description": "The category of the quote." },
+        "mood": { "type": "string", "description": "The mood of the quote." },
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "Tags for the quote." },
+        "isApproved": { "type": "boolean", "description": "Whether the quote is approved for public display." },
+        "isFeatured": { "type": "boolean", "description": "Whether the quote is featured." },
+        "createdAt": { "type": "timestamp", "description": "When the quote was created." },
+        "views": { "type": "number", "description": "Number of views." },
+        "likes": { "type": "number", "description": "Number of likes." },
+        "backgroundType": { "type": "string", "enum": ["image", "gradient", "color"], "description": "Type of background." },
+        "imageUrl": { "type": "string", "description": "Optional background image URL." },
+        "audioUrl": { "type": "string", "description": "Optional background audio URL." },
+        "color": { "type": "string", "description": "Optional background color or gradient class." },
+        "fontFamily": { "type": "string", "description": "Optional font family class." },
+        "slug": { "type": "string", "description": "URL-friendly slug for SEO." }
+      },
+      "required": ["content", "author", "category", "mood", "isApproved", "isFeatured", "createdAt", "views", "likes", "backgroundType", "slug"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile and roles.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] }
+      },
+      "required": ["email", "role"]
+    },
+    "Favorite": {
+      "title": "Favorite",
+      "description": "User's favorite quotes.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "quoteId": { "type": "string" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["userId", "quoteId", "createdAt"]
+    },
+    "Follow": {
+      "title": "Follow",
+      "description": "User following another user.",
+      "type": "object",
+      "properties": {
+        "followerId": { "type": "string" },
+        "followingId": { "type": "string" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["followerId", "followingId", "createdAt"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "User comment on a quote.",
+      "type": "object",
+      "properties": {
+        "quoteId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userDisplayName": { "type": "string" },
+        "userPhotoURL": { "type": "string" },
+        "content": { "type": "string" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["quoteId", "userId", "userDisplayName", "content", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/quotes/{quoteId}": {
+      "schema": { "$ref": "#/entities/Quote" },
+      "description": "Collection of all quotes."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Collection of users."
+    },
+    "/favorites/{favoriteId}": {
+      "schema": { "$ref": "#/entities/Favorite" },
+      "description": "Collection of user favorites."
+    },
+    "/follows/{followId}": {
+      "schema": { "$ref": "#/entities/Follow" },
+      "description": "Collection of user follows."
+    },
+    "/comments/{commentId}": {
+      "schema": { "$ref": "#/entities/Comment" },
+      "description": "Collection of comments on quotes."
+    }
+  }
+}

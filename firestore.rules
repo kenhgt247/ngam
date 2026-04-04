@@ -1,0 +1,89 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+        (
+          (request.auth.token.email == "buivanbac@gmail.com" && request.auth.token.email_verified == true) ||
+          (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+        );
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      // Users can read their own profile. Admins can read all.
+      allow read: if isOwner(userId) || isAdmin();
+      // Only admins can create/update roles, or users can create their own basic profile
+      allow create: if (isAuthenticated() && isOwner(userId) && request.resource.data.role == 'user') || isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /quotes/{quoteId} {
+      // Anyone can read approved quotes. Admins can read all.
+      // Also users can read their own quotes even if not approved.
+      allow read: if (resource.data.isApproved == true) || (isAuthenticated() && resource.data.authorId == request.auth.uid) || isAdmin();
+      
+      // Admins can create, update, delete quotes
+      allow create, update, delete: if isAdmin();
+      
+      // Authenticated users can create quotes
+      allow create: if isAuthenticated() && request.resource.data.authorId == request.auth.uid;
+      
+      // Users can update and delete their own quotes
+      allow update: if isAuthenticated() && resource.data.authorId == request.auth.uid && request.resource.data.authorId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+      
+      // Allow public to increment views and likes ONLY
+      allow update: if 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['views', 'likes']) &&
+        (request.resource.data.views == resource.data.views + 1 || request.resource.data.views == resource.data.views) &&
+        (request.resource.data.likes == resource.data.likes + 1 || request.resource.data.likes == resource.data.likes || request.resource.data.likes == resource.data.likes - 1);
+    }
+
+    match /favorites/{favoriteId} {
+      // Users can only read, create, delete their own favorites
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && request.resource.data.userId == request.auth.uid && resource.data.userId == request.auth.uid;
+    }
+
+    match /follows/{followId} {
+      // Anyone can read follows to see followers/following counts
+      allow read: if true;
+      // Users can only create/delete their own follows
+      allow create: if isAuthenticated() && request.resource.data.followerId == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.followerId == request.auth.uid;
+      allow update: if isAuthenticated() && request.resource.data.followerId == request.auth.uid && resource.data.followerId == request.auth.uid;
+    }
+
+    match /comments/{commentId} {
+      // Anyone can read comments
+      allow read: if true;
+      // Authenticated users can create comments
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      // Users can delete their own comments, admins can delete any
+      allow delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      // Users can update their own comments, admins can update any
+      allow update: if isAuthenticated() && ((resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid) || isAdmin());
+    }
+  }
+}
