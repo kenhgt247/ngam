@@ -66,7 +66,7 @@ export function QuoteDisplay({ quote, background, isAudioPlaying = true, onSwipe
 
   return (
     <div 
-      className="relative w-full h-full flex flex-col items-center justify-center px-6 sm:px-12 overflow-hidden"
+      className="relative w-full h-full overflow-hidden"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
@@ -125,50 +125,52 @@ export function QuoteDisplay({ quote, background, isAudioPlaying = true, onSwipe
       )}
 
       {/* Content */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={quote.id}
-          initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative z-20 max-w-2xl w-full text-center space-y-8"
-        >
-          <p className={cn(
-            "text-3xl sm:text-4xl md:text-5xl leading-relaxed sm:leading-relaxed md:leading-relaxed tracking-wide drop-shadow-lg",
-            quote.fontFamily || "font-serif",
-            quote.textColor || "text-white/95"
-          )}>
-            "{quote.content}"
-          </p>
-          
-          <div className="flex flex-col items-center gap-2">
-            {quote.authorId ? (
-              <Link 
-                to={`/profile/${quote.authorId}`}
-                className={cn("font-sans text-sm sm:text-base tracking-widest uppercase opacity-80 hover:opacity-100 transition-opacity flex items-center gap-2", quote.textColor || "text-white")}
-              >
-                {quote.authorPhotoURL && (
-                  <img src={quote.authorPhotoURL} alt={quote.author} className="w-6 h-6 rounded-full object-cover border border-current/20" referrerPolicy="no-referrer" />
-                )}
-                {quote.author}
-              </Link>
-            ) : (
-              <span className={cn("font-sans text-sm sm:text-base tracking-widest uppercase opacity-80", quote.textColor || "text-white")}>
-                {quote.author}
-              </span>
-            )}
-            <div className={cn("flex items-center gap-3 text-xs opacity-60", quote.textColor || "text-white")}>
-              <span className="px-2 py-1 rounded-full border border-current/20 bg-current/5 backdrop-blur-sm">
-                {quote.category}
-              </span>
-              <span className="px-2 py-1 rounded-full border border-current/20 bg-current/5 backdrop-blur-sm">
-                {quote.mood}
-              </span>
+      <div className="absolute inset-0 z-20 overflow-y-auto no-scrollbar">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={quote.id}
+            initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="min-h-full w-full max-w-4xl mx-auto flex flex-col items-center justify-center px-6 sm:px-12 pt-28 pb-48 sm:pt-32 sm:pb-32 text-center space-y-6 sm:space-y-8"
+          >
+            <p className={cn(
+              "text-2xl sm:text-4xl md:text-5xl leading-relaxed sm:leading-relaxed md:leading-relaxed tracking-wide drop-shadow-lg",
+              quote.fontFamily || "font-serif",
+              quote.textColor || "text-white/95"
+            )}>
+              "{quote.content}"
+            </p>
+            
+            <div className="flex flex-col items-center gap-2">
+              {quote.authorId ? (
+                <Link 
+                  to={`/profile/${quote.authorId}`}
+                  className={cn("font-sans text-sm sm:text-base tracking-widest uppercase opacity-80 hover:opacity-100 transition-opacity flex items-center gap-2", quote.textColor || "text-white")}
+                >
+                  {quote.authorPhotoURL && (
+                    <img src={quote.authorPhotoURL} alt={quote.author} className="w-6 h-6 rounded-full object-cover border border-current/20" referrerPolicy="no-referrer" />
+                  )}
+                  {quote.author}
+                </Link>
+              ) : (
+                <span className={cn("font-sans text-sm sm:text-base tracking-widest uppercase opacity-80", quote.textColor || "text-white")}>
+                  {quote.author}
+                </span>
+              )}
+              <div className={cn("flex items-center gap-3 text-xs opacity-60", quote.textColor || "text-white")}>
+                <span className="px-2 py-1 rounded-full border border-current/20 bg-current/5 backdrop-blur-sm">
+                  {quote.category}
+                </span>
+                <span className="px-2 py-1 rounded-full border border-current/20 bg-current/5 backdrop-blur-sm">
+                  {quote.mood}
+                </span>
+              </div>
             </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </div>
   );
 }
