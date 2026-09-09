@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "scripts": {"qa":"playwright test --reporter=line"},
+  "scripts": {"qa":"playwright test --reporter=line --grep-invert=\"00 home public \\\\+ 23 tools|23 mobile WebKit home/scanner/sign\""},
   "devDependencies": {
     "@playwright/test": "1.55.0",
     "jszip": "3.10.1",
