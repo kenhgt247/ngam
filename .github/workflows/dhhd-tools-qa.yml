@@ -1,0 +1,50 @@
+name: DHHD Tools Production Real-File QA
+
+on:
+  push:
+    branches: [dhhd-tools-qa]
+    paths:
+      - 'dhhd-qa/**'
+      - '.github/workflows/dhhd-tools-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    defaults:
+      run:
+        working-directory: dhhd-qa
+    steps:
+      - name: Checkout QA branch
+        uses: actions/checkout@v4
+        with:
+          ref: dhhd-tools-qa
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install QA dependencies
+        run: npm install
+
+      - name: Install Chromium and WebKit
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Verify production is public
+        run: curl -fLsS --max-time 30 https://dhhd-tools-v022.vercel.app/ | grep -q 'DHHD Tools'
+
+      - name: Run all 23 real-file production tests
+        run: npm run qa
+
+      - name: Upload QA evidence on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dhhd-tools-production-qa-failure
+          path: dhhd-qa/test-results/
+          if-no-files-found: ignore
