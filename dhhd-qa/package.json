@@ -1,0 +1,13 @@
+{
+  "name": "dhhd-tools-public-qa",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {"qa":"playwright test --reporter=line"},
+  "devDependencies": {
+    "@playwright/test": "1.55.0",
+    "jszip": "3.10.1",
+    "pdf-lib": "1.17.1",
+    "sharp": "0.34.3"
+  }
+}
