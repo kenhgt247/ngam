@@ -24,7 +24,8 @@ test.describe.serial('DHHD v0.8 public production gate',()=>{
   test('55 mobile WebKit sees v0.8 on home and opens all three routes',async()=>{
     const browser=await webkit.launch(),ctx=await browser.newContext({...devices['iPhone 13']}),page=await ctx.newPage();
     await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===44,null,{timeout:30000});
-    for(const key of v08){await expect(page.locator(`[href="#${key}"]`)).toHaveCount(1);await page.goto(`${BASE}/#${key}`,{waitUntil:'load'});await expect(page.locator('.toolHero h1')).toBeVisible({timeout:30000})}
+    for(const key of v08)await expect(page.locator(`[href="#${key}"]`)).toHaveCount(1);
+    for(const key of v08){await page.goto(`${BASE}/#${key}`,{waitUntil:'load'});await expect(page.locator('.toolHero h1')).toBeVisible({timeout:30000})}
     await ctx.close();await browser.close();
   });
 });
