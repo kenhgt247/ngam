@@ -29,7 +29,7 @@ async function validPdf(file,count){const d=await PDFDocument.load(await fs.read
 async function textViaSite(page,file){await go(page,'pdftotext');await page.setInputFiles('#txtf',file);await page.locator('#txtgo').click();await page.locator('#txtout').waitFor({state:'visible',timeout:60000});return await page.locator('#txtout').inputValue()}
 
 test.beforeAll(fixtures);
-test.describe.serial('DHHD v0.9 hidden production real-file gate',()=>{
+test.describe.serial('DHHD v0.9 production real-file gate',()=>{
   test('56 duplex scan reverses back pass and interleaves pages correctly',async({page})=>{
     await go(page,'duplexscan');await expect(page.locator('.toolHero h1')).toHaveText('Ghép scan 2 mặt');
     await page.setInputFiles('#dupfront',f.front);await page.setInputFiles('#dupback',f.back);await expect(page.locator('#duprev')).toBeChecked();
@@ -50,12 +50,12 @@ test.describe.serial('DHHD v0.9 hidden production real-file gate',()=>{
     const p=await dl(page,'#formexport','58-form.pdf',120000),pdf=await validPdf(p,1),form=pdf.getForm();expect(form.getTextField('Ho va ten').getText()).toBe('Nguyễn Văn A');expect(form.getTextField('Ma ho so').getText()).toBe('HS-2026-001');expect(form.getCheckBox('Dong y').isChecked()).toBeTruthy();
   });
 
-  test('59 v0.9 stays hidden from public 44-tool home even after a beta route visit',async({page})=>{
-    await go(page,'duplexscan');await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===44,null,{timeout:30000});
-    await expect(page.getByText('44 công cụ hoạt động')).toBeVisible();for(const key of ['duplexscan','keywordpages','formfill'])await expect(page.locator(`[href="#${key}"]`)).toHaveCount(0);
+  test('59 v0.9 is public on 47-tool home after route visit',async({page})=>{
+    await go(page,'duplexscan');await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===47,null,{timeout:30000});
+    await expect(page.getByText('47 công cụ hoạt động')).toBeVisible();for(const key of ['duplexscan','keywordpages','formfill'])await expect(page.locator(`[href="#${key}"]`)).toHaveCount(1);
   });
 
-  test('60 mobile WebKit opens all hidden v0.9 routes',async()=>{
+  test('60 mobile WebKit opens all public v0.9 routes',async()=>{
     const browser=await webkit.launch(),ctx=await browser.newContext({...devices['iPhone 13']}),page=await ctx.newPage();
     for(const key of ['duplexscan','keywordpages','formfill']){await page.goto(`${BASE}/#${key}`,{waitUntil:'load'});await expect(page.locator('.toolHero h1')).toBeVisible({timeout:30000})}
     await ctx.close();await browser.close();
