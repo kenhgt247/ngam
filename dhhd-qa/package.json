@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.2",
   "type": "module",
-  "scripts": {"qa":"playwright test --reporter=line --grep-invert=\"00 home public \\\\+ 23 tools|23 mobile WebKit home/scanner/sign|30 all six v0.5 tools remain public|31 public home exposes 41 tools|32 mobile WebKit home/scanner/sign after v0.7 promotion|39 all six v0.6 tools remain public|46 public home exposes all six v0.7 tools and 41 total|51 v0.8 remains hidden from 41-tool public home\""},
+  "scripts": {"qa":"playwright test --reporter=line --grep-invert=\"00 home public \\\\+ 23 tools|23 mobile WebKit home/scanner/sign|30 all six v0.5 tools remain public|31 public home exposes 41 tools|32 mobile WebKit home/scanner/sign after v0.7 promotion|39 all six v0.6 tools remain public|46 public home exposes all six v0.7 tools and 41 total|51 v0.8 remains hidden from 41-tool public home|85 Chromium creates visual archive candidate that passes veraPDF PDF/A-2b|86 visual archive removes interactive form and original selectable text|87 PDF-A stays hidden on 54-tool home and WebKit output also passes veraPDF 2b\""},
   "devDependencies": {
     "@playwright/test": "1.55.0",
     "jszip": "3.10.1",
