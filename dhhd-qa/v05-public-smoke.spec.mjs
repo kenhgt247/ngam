@@ -13,17 +13,18 @@ test.beforeAll(async()=>{
   await fs.writeFile(fixture,await pdf.save());
 });
 
-test('31 public home exposes 29 tools',async({page})=>{
+test('31 public home exposes 35 tools on v0.6',async({page})=>{
   const r=await page.goto(`${BASE}/#home`,{waitUntil:'load'});
   expect(r.status()).toBeLessThan(400);
-  await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===29);
-  await expect(page.getByText('29 công cụ hoạt động')).toBeVisible();
+  await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===35);
+  await expect(page.getByText('35 công cụ hoạt động')).toBeVisible();
+  await expect(page.locator('.hero .eyebrow')).toHaveText('DHHD TOOLS v0.6.0');
 });
 
-test('32 mobile WebKit home/scanner/sign after v0.5 promotion',async()=>{
+test('32 mobile WebKit home/scanner/sign after v0.6 promotion',async()=>{
   const browser=await webkit.launch(),ctx=await browser.newContext({...devices['iPhone 13']}),page=await ctx.newPage();
   await page.goto(`${BASE}/#home`,{waitUntil:'load'});
-  await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===29);
+  await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===35);
   await expect(page.locator('.topbar')).toBeVisible();
   await page.goto(`${BASE}/#scanner`,{waitUntil:'load'});
   await expect(page.locator('#cameraBtn')).toBeVisible();
