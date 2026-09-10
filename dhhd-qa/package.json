@@ -1,9 +1,9 @@
 {
   "name": "dhhd-tools-public-qa",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
-  "scripts": {"qa":"playwright test --reporter=line --grep-invert=\"00 home public \\\\+ 23 tools|23 mobile WebKit home/scanner/sign\""},
+  "scripts": {"qa":"playwright test --reporter=line --grep-invert=\"00 home public \\\\+ 23 tools|23 mobile WebKit home/scanner/sign|30 all six v0.5 tools remain public|31 public home exposes 41 tools|32 mobile WebKit home/scanner/sign after v0.7 promotion|39 all six v0.6 tools remain public|46 public home exposes all six v0.7 tools and 41 total|51 v0.8 remains hidden from 41-tool public home\""},
   "devDependencies": {
     "@playwright/test": "1.55.0",
     "jszip": "3.10.1",
