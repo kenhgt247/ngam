@@ -35,10 +35,43 @@ jobs:
       - name: Install Chromium and WebKit
         run: npx playwright install --with-deps chromium webkit
 
+      - name: Install veraPDF 1.30.2 stable
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$RUNNER_TEMP/verapdf-installer"
+          install_dir="$RUNNER_TEMP/verapdf"
+          mkdir -p "$work"
+          curl -fLsS --retry 3 -o "$work/verapdf.zip" https://software.verapdf.org/rel/1.30/verapdf-greenfield-1.30.2-installer.zip
+          echo "6cc6341cb1af644044054b81f00a6590a7918abb18f762243de115258bcad838  $work/verapdf.zip" | sha256sum -c -
+          unzip -q "$work/verapdf.zip" -d "$work/unpacked"
+          jar="$(find "$work/unpacked" -name 'verapdf-izpack-installer-*.jar' -print -quit)"
+          test -n "$jar"
+          cat > "$work/auto-install.xml" <<XML
+          <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+          <AutomatedInstallation langpack="eng">
+            <com.izforge.izpack.panels.htmlhello.HTMLHelloPanel id="welcome"/>
+            <com.izforge.izpack.panels.target.TargetPanel id="install_dir"><installpath>${install_dir}</installpath></com.izforge.izpack.panels.target.TargetPanel>
+            <com.izforge.izpack.panels.packs.PacksPanel id="sdk_pack_select">
+              <pack index="0" name="veraPDF GUI" selected="false"/>
+              <pack index="1" name="veraPDF CLI" selected="true"/>
+              <pack index="2" name="veraPDF Documentation" selected="false"/>
+              <pack index="3" name="veraPDF Sample Plugins" selected="false"/>
+            </com.izforge.izpack.panels.packs.PacksPanel>
+            <com.izforge.izpack.panels.install.InstallPanel id="install"/>
+            <com.izforge.izpack.panels.finish.FinishPanel id="finish"/>
+          </AutomatedInstallation>
+          XML
+          java -jar "$jar" "$work/auto-install.xml"
+          bin="$(find "$install_dir" -type f -name verapdf -perm -u+x -print -quit)"
+          test -n "$bin"
+          "$bin" --version
+          echo "VERAPDF_BIN=$bin" >> "$GITHUB_ENV"
+
       - name: Verify production is public
         run: curl -fLsS --max-time 30 https://dhhd-tools-v022.vercel.app/ | grep -q 'DHHD Tools'
 
-      - name: Run all 23 real-file production tests
+      - name: Run production real-file QA
         run: npm run qa
 
       - name: Upload QA evidence on failure
