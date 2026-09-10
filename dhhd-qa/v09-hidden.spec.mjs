@@ -50,9 +50,9 @@ test.describe.serial('DHHD v0.9 production real-file gate',()=>{
     const p=await dl(page,'#formexport','58-form.pdf',120000),pdf=await validPdf(p,1),form=pdf.getForm();expect(form.getTextField('Ho va ten').getText()).toBe('Nguyễn Văn A');expect(form.getTextField('Ma ho so').getText()).toBe('HS-2026-001');expect(form.getCheckBox('Dong y').isChecked()).toBeTruthy();
   });
 
-  test('59 v0.9 remains public on 53-tool v0.11 home after route visit',async({page})=>{
-    await go(page,'duplexscan');await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===53,null,{timeout:30000});
-    await expect(page.getByText('53 công cụ hoạt động')).toBeVisible();for(const key of ['duplexscan','keywordpages','formfill'])await expect(page.locator(`[href="#${key}"]`)).toHaveCount(1);
+  test('59 v0.9 remains public on 54-tool v0.14 home after route visit',async({page})=>{
+    await go(page,'duplexscan');await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===54,null,{timeout:30000});
+    await expect(page.getByText('54 công cụ hoạt động')).toBeVisible();for(const key of ['duplexscan','keywordpages','formfill'])await expect(page.locator(`[href="#${key}"]`)).toHaveCount(1);
   });
 
   test('60 mobile WebKit opens all public v0.9 routes',async()=>{

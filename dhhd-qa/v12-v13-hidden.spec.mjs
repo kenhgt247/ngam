@@ -11,7 +11,6 @@ const pdfFile=path.join(fx,'quality-lab.pdf'),docxFile=path.join(fx,'dummy.docx'
 async function fixtures(){
   await fs.mkdir(fx,{recursive:true});
   const pdf=await PDFDocument.create(),font=await pdf.embedFont(StandardFonts.HelveticaBold),p=pdf.addPage([595.28,841.89]);p.drawText('DHHD QUALITY LAB',{x:60,y:700,size:30,font});await fs.writeFile(pdfFile,await pdf.save());
-  // Deliberately tiny placeholders: engine is expected to be fail-closed before any upload attempt.
   await fs.writeFile(docxFile,Buffer.from('PK\x03\x04dummy-docx'));await fs.writeFile(xlsxFile,Buffer.from('PK\x03\x04dummy-xlsx'));await fs.writeFile(pptxFile,Buffer.from('PK\x03\x04dummy-pptx'));
 }
 
@@ -27,8 +26,8 @@ test.describe.serial('DHHD v0.12/v0.13 hidden high-fidelity quality-lab safety g
     const unsupported=await request.post(`${BASE}/api/pdf-export`,{headers:{Origin:BASE,'Content-Type':'application/json'},data:{action:'initExport',targetFormat:'exe'}});expect(unsupported.status()).toBe(400);
   });
 
-  test('78 public home remains exactly 53 tools and all five quality-lab routes stay hidden',async({page})=>{
-    await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===53,null,{timeout:30000});await expect(page.locator('.hero .eyebrow')).toHaveText('DHHD TOOLS v0.11.0');for(const key of labs)await expect(page.locator(`[href="#${key}"]`)).toHaveCount(0);
+  test('78 public home remains exactly 54 tools and all five quality-lab routes stay hidden',async({page})=>{
+    await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===54,null,{timeout:30000});await expect(page.locator('.hero .eyebrow')).toHaveText('DHHD TOOLS v0.14.0');for(const key of labs)await expect(page.locator(`[href="#${key}"]`)).toHaveCount(0);
   });
 
   test('79 PDF to Office labs fail closed when engine is not configured',async({page,request})=>{
@@ -45,7 +44,7 @@ test.describe.serial('DHHD v0.12/v0.13 hidden high-fidelity quality-lab safety g
     for(const [key,file] of pairs){await page.goto(`${BASE}/#${key}`,{waitUntil:'load'});await expect(page.locator('.toolHero h1')).toBeVisible({timeout:30000});await expect(page.getByText('Engine chuẩn cao chưa được mở')).toBeVisible();await page.setInputFiles('#v13file',file);await expect(page.locator('#v13consent')).toBeDisabled();await expect(page.locator('#v13go')).toBeDisabled()}
   });
 
-  test('81 mobile WebKit can open all hidden quality-lab routes while home stays unchanged',async()=>{
-    const browser=await webkit.launch(),ctx=await browser.newContext({...devices['iPhone 13']}),page=await ctx.newPage();await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===53,null,{timeout:30000});for(const key of labs){await page.goto(`${BASE}/#${key}`,{waitUntil:'load'});await expect(page.locator('.toolHero h1')).toBeVisible({timeout:30000})}await ctx.close();await browser.close();
+  test('81 mobile WebKit can open all hidden quality-lab routes while 54-tool home stays public',async()=>{
+    const browser=await webkit.launch(),ctx=await browser.newContext({...devices['iPhone 13']}),page=await ctx.newPage();await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===54,null,{timeout:30000});for(const key of labs){await expect(page.locator(`[href="#${key}"]`)).toHaveCount(0);await page.goto(`${BASE}/#${key}`,{waitUntil:'load'});await expect(page.locator('.toolHero h1')).toBeVisible({timeout:30000});await page.goto(`${BASE}/#home`,{waitUntil:'load'})}await ctx.close();await browser.close();
   });
 });
