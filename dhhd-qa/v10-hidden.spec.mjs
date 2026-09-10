@@ -1,4 +1,4 @@
-import { test, expect, webkit, devices } from '@playwright/test';
+import { test, expect, chromium, webkit, devices } from '@playwright/test';
 import { PDFDocument, StandardFonts } from 'pdf-lib';
 import JSZip from 'jszip';
 import sharp from 'sharp';
@@ -24,7 +24,7 @@ async function validPdfBytes(bytes,count){const d=await PDFDocument.load(bytes);
 async function textViaSite(page,file){await go(page,'pdftotext');await page.setInputFiles('#txtf',file);await page.locator('#txtgo').click();await page.locator('#txtout').waitFor({state:'visible',timeout:60000});return await page.locator('#txtout').inputValue()}
 
 test.beforeAll(fixtures);
-test.describe.serial('DHHD v0.10 hidden production real-file gate',()=>{
+test.describe.serial('DHHD v0.10 public production release gate',()=>{
   test('64 batch compress creates ZIP with two valid PDFs at or below 1MB',async({page})=>{
     await go(page,'batchcompress');await page.setInputFiles('#bcf',[f.big1,f.big2]);await page.locator('#bctarget').selectOption('1');await page.locator('#bcgo').click();await expect(page.locator('#bcdl')).toBeVisible({timeout:240000});
     const zpath=await dl(page,'#bcdl','64-batch-compress.zip'),zip=await JSZip.loadAsync(await fs.readFile(zpath)),pdfNames=Object.keys(zip.files).filter(n=>n.endsWith('.pdf'));expect(pdfNames).toHaveLength(2);
@@ -43,11 +43,15 @@ test.describe.serial('DHHD v0.10 hidden production real-file gate',()=>{
     await page.locator('[data-sr]').nth(1).uncheck();await expect(page.locator('[data-sr]:checked')).toHaveCount(1);const p=await dl(page,'#srexport','66-search-redact.pdf');await validPdfBytes(await fs.readFile(p),2);await expect(page.locator('#msg')).toContainText('Đã che 1 vùng');const text=await textViaSite(page,p);expect(text).not.toContain('SECRET_CODE_12345');
   });
 
-  test('67 v0.10 stays hidden from public 47-tool home after direct beta visit',async({page})=>{
-    await go(page,'batchcompress');await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===47,null,{timeout:30000});for(const key of ['batchcompress','batchwatermark','searchredact'])await expect(page.locator(`[href="#${key}"]`)).toHaveCount(0);await expect(page.getByText('47 công cụ hoạt động')).toBeVisible();
+  test('67 public home exposes 50 tools and all v0.10 cards',async({page})=>{
+    await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===50,null,{timeout:30000});await expect(page.locator('.hero .eyebrow')).toHaveText('DHHD TOOLS v0.10.0');await expect(page.getByText('50 công cụ hoạt động')).toBeVisible();for(const key of ['batchcompress','batchwatermark','searchredact'])await expect(page.locator(`[href="#${key}"]`)).toHaveCount(1);
   });
 
-  test('68 mobile WebKit opens all hidden v0.10 routes',async()=>{
-    const browser=await webkit.launch(),ctx=await browser.newContext({...devices['iPhone 13']}),page=await ctx.newPage();for(const key of ['batchcompress','batchwatermark','searchredact']){await page.goto(`${BASE}/#${key}`,{waitUntil:'load'});await expect(page.locator('.toolHero h1')).toBeVisible({timeout:30000})}await ctx.close();await browser.close();
+  test('68 static fallback exposes 50 tools with JavaScript disabled',async()=>{
+    const browser=await chromium.launch(),ctx=await browser.newContext({javaScriptEnabled:false}),page=await ctx.newPage();const r=await page.goto(`${BASE}/`,{waitUntil:'load'});expect(r.status()).toBeLessThan(400);await expect(page.locator('.hero .eyebrow')).toHaveText('DHHD TOOLS v0.10.0');await expect(page.locator('.grid .card')).toHaveCount(50);for(const key of ['batchcompress','batchwatermark','searchredact'])await expect(page.locator(`[href="#${key}"]`)).toHaveCount(1);await ctx.close();await browser.close();
+  });
+
+  test('69 mobile WebKit sees v0.10 on home and opens all three routes',async()=>{
+    const browser=await webkit.launch(),ctx=await browser.newContext({...devices['iPhone 13']}),page=await ctx.newPage();await page.goto(`${BASE}/#home`,{waitUntil:'load'});await page.waitForFunction(()=>document.querySelectorAll('[data-tool-card]').length===50,null,{timeout:30000});for(const key of ['batchcompress','batchwatermark','searchredact']){await page.goto(`${BASE}/#home`,{waitUntil:'load'});await expect(page.locator(`[href="#${key}"]`)).toHaveCount(1);await page.goto(`${BASE}/#${key}`,{waitUntil:'load'});await expect(page.locator('.toolHero h1')).toBeVisible({timeout:30000})}await ctx.close();await browser.close();
   });
 });
